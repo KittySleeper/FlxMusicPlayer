@@ -1,0 +1,58 @@
+{
+  "dependencies": [
+    {
+      "name": "flixel",
+      "type": "haxelib",
+      "version": "5.3.1"
+    },
+    {
+      "name": "flixel-addons",
+      "type": "haxelib",
+      "version": "3.3.2"
+    },
+    {
+        "name": "flixel-ui",
+        "type": "haxelib",
+        "version": "2.6.3"
+    },
+    {
+      "name": "funkin.vis",
+      "type": "git",
+      "dir": null,
+      "ref": "1966f8fbbbc509ed90d4b520f3c49c084fc92fd6",
+      "url": "https://github.com/FunkinCrew/funkVis"
+    },
+    {
+      "name": "grig.audio",
+      "type": "git",
+      "dir": "src",
+      "ref": "8567c4dad34cfeaf2ff23fe12c3796f5db80685e",
+      "url": "https://github.com/FunkinCrew/grig.audio"
+    },
+    {
+      "name": "hxvlc",
+      "type": "haxelib",
+      "version": "2.2.4"
+    },
+    {
+      "name": "hxcpp",
+      "type": "haxelib",
+      "version": "4.3.2"
+    },
+    {
+      "name": "hxcpp-debug-server",
+      "type": "haxelib",
+      "version": "1.2.4"
+    },
+    {
+      "name": "lime",
+      "type": "haxelib",
+      "version": "8.0.2"
+    },
+    {
+      "name": "openfl",
+      "type": "haxelib",
+      "version": "9.2.2"
+    }
+  ]
+}
