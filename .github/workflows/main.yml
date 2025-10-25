@@ -31,7 +31,7 @@ jobs:
           haxelib setup ~/haxelib
           haxelib --global install hmm
           haxelib --global run hmm setup
-          hmm install
+          haxelib run hmm install
           haxelib list
       - name: Building the game
         run: |
