@@ -28,7 +28,7 @@ jobs:
             cache-build-windows
       - name: Installing/Updating libraries
         run: |
-          haxelib setup C:/haxelib
+          haxelib setup ~/haxelib
           haxelib --global install hmm
           haxelib --global run hmm setup
           hmm install
