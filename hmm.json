@@ -1,14 +1,18 @@
 {
   "dependencies": [
     {
-      "name": "flixel",
-      "type": "haxelib",
-      "version": "5.3.1"
+      "name": "cne-flixel",
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/CodenameCrew/cne-flixel"
     },
     {
-      "name": "flixel-addons",
-      "type": "haxelib",
-      "version": "3.3.2"
+      "name": "cne-flixel-addons",
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/CodenameCrew/cne-flixel-addons"
     },
     {
         "name": "flixel-ui",
