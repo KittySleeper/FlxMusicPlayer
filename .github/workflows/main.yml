@@ -17,7 +17,7 @@ jobs:
     
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/setup-node@v4
+      - uses: actions/upload-artifact@v4
       
       - uses: krdlab/setup-haxe@master
         with:
@@ -36,12 +36,12 @@ jobs:
       - name: Compile
         run: haxelib run lime build windows --app-version="4.0.0-${{ github.run_id}}"
       - name: Publish Artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v4
         with:
           name: windowsBuild
           path: export/release/windows/bin
       - name: Publish Windows Updator
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v4
         with:
           name: windowsUpdator
           path: 'export/release/windows/bin/FlxProject.exe'
