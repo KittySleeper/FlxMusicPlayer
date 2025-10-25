@@ -20,6 +20,13 @@
         "version": "2.6.3"
     },
     {
+      "name": "hscript-improved",
+      "type": "git",
+      "dir": null,
+      "ref": null,
+      "url": "https://github.com/FNF-CNE-Devs/hscript-improved"
+    },
+    {
       "name": "funkin.vis",
       "type": "git",
       "dir": null,
@@ -57,13 +64,6 @@
       "name": "openfl",
       "type": "haxelib",
       "version": "9.2.2"
-    },
-    {
-      "name": "hscript-improved",
-      "type": "git",
-      "dir": null,
-      "ref": null,
-      "url": "https://github.com/FNF-CNE-Devs/hscript-improved"
     }
   ]
 }
