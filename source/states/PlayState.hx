@@ -29,6 +29,10 @@ class PlayState extends FlxState
 	var songPosBar:FlxBar;
 	var play:FlxSprite;
 
+	var camBopIntensity:Float = .15;
+	var camBopLerpSpeed:Float = 0.1;
+	var camBopBeat:Float = 4;
+
 	var uiBottom:FlxSprite;
 
 	override public function create()
@@ -89,7 +93,8 @@ class PlayState extends FlxState
 		@:privateAccess
 		var musicSource:AudioSource = cast FlxG.sound.music._channel.__source;
 
-		visualizer = new Visualizer(musicSource, 35, FlxColor.fromString(songData.songColor));
+		visualizer = new Visualizer(musicSource, 35);
+		visualizer.color = FlxColor.fromString(songData.songColor);
 		visualizer.alpha = 0.45;
 		add(visualizer);
 
@@ -107,7 +112,8 @@ class PlayState extends FlxState
 
 		songPosBar = new FlxBar(0, 0, LEFT_TO_RIGHT, 450, 30, this, "songPos", 0, FlxG.sound.music.length / 1000);
 		songPosBar.numDivisions = 1200;
-		songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.fromString(songData.songColor));
+		songPosBar.createFilledBar(FlxColor.BLACK, FlxColor.WHITE);
+		songPosBar.color = FlxColor.fromString(songData.songColor);
 		songPosBar.y = ((uiBottom.height - songPosBar.height) / 2) + uiBottom.y;
 		songPosBar.screenCenter(X);
 
@@ -137,6 +143,7 @@ class PlayState extends FlxState
 
 	override public function update(elapsed:Float)
 	{
+		if (FlxG.keys.justPressed.ESCAPE) FlxG.switchState(new SongPicker());
 		if (FlxG.sound.music != null) {
 			songPos = FlxG.sound.music.time / 1000;
 			curBeat = (songPos * songData.bpm) / 60;
@@ -185,21 +192,27 @@ class PlayState extends FlxState
 
 		super.update(elapsed);
 
-		FlxG.camera.zoom = FlxMath.lerp(FlxG.camera.zoom, 1, 0.1 * elapsed * 60);
+		FlxG.camera.zoom = FlxMath.lerp(FlxG.camera.zoom, 1, camBopLerpSpeed * elapsed * 60);
 
 		script.callFunction("update", [elapsed]);
 	}
 
 	function beatHit()
 	{
-		if (lastBeat % 4 == 0)
-			FlxG.camera.zoom += 0.15;
+		if (lastBeat % camBopBeat == 0)
+			FlxG.camera.zoom += camBopIntensity;
 
 		script.callFunction("beatHit");
 	}
 
 	function playEvent(e:Dynamic) {
 		switch (e.name) {
+			case "BPM Change":
+				songData.bpm = e.params[0];
+			case "Cam Bop Change":
+				camBopBeat = e.params[0];
+				camBopIntensity = e.params[1];
+				camBopLerpSpeed = e.params[2];
 			default:
 				//fuck me in the ass please :3
 		}

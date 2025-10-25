@@ -9,7 +9,7 @@ class Visualizer extends FlxTypedSpriteGroup<FlxSprite>
     var peakLines:FlxTypedSpriteGroup<FlxSprite>;
     var analyzer:funkin.vis.dsp.SpectralAnalyzer;
 
-    public function new(audioSource:AudioSource, barCount:Int = 16, barColor:FlxColor = FlxColor.RED)
+    public function new(audioSource:AudioSource, barCount:Int = 16)
     {
         super();
 
@@ -23,11 +23,11 @@ class Visualizer extends FlxTypedSpriteGroup<FlxSprite>
 
 		for (i in 0...barCount)
 		{
-			var spr = new FlxSprite((i / barCount) * FlxG.width, 0).makeGraphic(Std.int((1 / barCount) * FlxG.width) - 4, FlxG.height, barColor);
+			var spr = new FlxSprite((i / barCount) * FlxG.width, 0).makeGraphic(Std.int((1 / barCount) * FlxG.width) - 4, FlxG.height);
             spr.origin.set(0, FlxG.height);
 			grpBars.add(spr);
 
-            spr = new FlxSprite((i / barCount) * FlxG.width, 0).makeGraphic(Std.int((1 / barCount) * FlxG.width) - 4, 1, barColor);
+            spr = new FlxSprite((i / barCount) * FlxG.width, 0).makeGraphic(Std.int((1 / barCount) * FlxG.width) - 4, 1);
             peakLines.add(spr);
 		}
     }
