@@ -22,8 +22,8 @@ jobs:
           key: cache-build-windows
           path: |
             .haxelib/
-            export/release/windows/haxe/
-            export/release/windows/obj/
+            export/windows/haxe/
+            export/windows/obj/
           restore-keys: |
             cache-build-windows
       - name: Installing/Updating libraries
@@ -36,12 +36,12 @@ jobs:
           haxelib list
       - name: Building the game
         run: |
-          haxelib run lime build windows
+          haxelib run lime test windows
       - name: Uploading artifact
         uses: actions/upload-artifact@v4
         with:
           name: Music Player
-          path: export/release/windows/bin
+          path: export/windows/bin
       - name: Clearing already existing cache
         uses: actions/github-script@v6
         with:
@@ -68,7 +68,7 @@ jobs:
           key: cache-build-windows
           path: |
             .haxelib/
-            export/release/windows/haxe/
-            export/release/windows/obj/
+            export/windows/haxe/
+            export/windows/obj/
           restore-keys: |
             cache-build-windows
