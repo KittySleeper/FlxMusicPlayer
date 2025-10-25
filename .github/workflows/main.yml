@@ -32,6 +32,7 @@ jobs:
           haxelib --global install hmm
           haxelib --global run hmm setup
           haxelib run hmm install
+          haxelib set openfl 9.2.2
           haxelib list
       - name: Building the game
         run: |
