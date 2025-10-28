@@ -9,6 +9,9 @@ import flixel.FlxG;
 import flixel.util.FlxColor;
 import backend.HScript;
 import backend.Paths;
+import states.OptionsState;
 import objects.Visualizer;
+
+using StringTools;
 
 //make these more organized lmao

@@ -38,6 +38,7 @@ class HScript {
 			interp.errorHandler = traceError;
 			try {
 				var path = scriptPath + "." + allowedExtensions[boolArray.indexOf(true)];
+
 				parser.line = 1; // Reset the parser position.
 				expr = parser.parseString(Paths.file(path));
 				interp.variables.set("trace", hscriptTrace);

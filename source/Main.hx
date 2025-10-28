@@ -11,7 +11,7 @@ class Main extends Sprite
 	{
 		super();
 
-		songList = sys.FileSystem.readDirectory("./assets/songs/").filter(f -> sys.FileSystem.isDirectory("./assets/songs/" + f));
+		songList = Paths.readDir("songs");
 
 		HScript.parser = new hscript.Parser();
 		HScript.parser.allowJSON = true;
@@ -25,7 +25,10 @@ class Main extends Sprite
 			"debugBuild" => #if (debug) true #else false #end
 		];
 
-		var game = addChild(new FlxGame(0, 0, states.SongPicker, 250, 250, true));
+		var game = addChild(new FlxGame(0, 0, states.SongPickerState, 250, 250, true));
+
+		FlxG.fixedTimestep = false;
+
 		FlxG.signals.postUpdate.add(function() {
 			if (FlxG.keys.justPressed.F5)
 				FlxG.resetState();

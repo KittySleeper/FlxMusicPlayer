@@ -2,9 +2,7 @@ package states;
 
 import flixel.util.FlxStringUtil;
 import flixel.ui.FlxBar;
-import haxe.Json;
 import lime.media.AudioSource;
-import sys.FileSystem;
 import flixel.tweens.FlxEase;
 
 class PlayState extends FlxState
@@ -13,11 +11,12 @@ class PlayState extends FlxState
 	var songPos:Float = 0;
 	var curBeat:Float = 0;
 
+	public static var shuffleMode:Bool = false;
 	public static var curSongIndex:Int = 0;
 	var songData:Dynamic;
 	var songEvents:Array<Dynamic>;
 
-	var script:HScript;
+	var scripts:Array<HScript> = [];
 
 	var uiCam:FlxCamera;
 
@@ -44,6 +43,7 @@ class PlayState extends FlxState
 		uiCam.alpha = 0.75;
 
 		loadSong(curSongIndex);
+		shuffleMode = OptionsState.options.get("Shuffle Mode");
 	}
 
 	function loadSong(index:Int)
@@ -65,21 +65,27 @@ class PlayState extends FlxState
 
 		var songFolder = "songs/" + Main.songList[index];
 
-		songData = Paths.json('$songFolder/meta');
-		songEvents = Paths.exists('$songFolder/events.json') ? Paths.json('$songFolder/events').events : [];
+		for (script in scripts) script.callFunction("destroy");
 
-		script = new HScript(songFolder + "/script");
-		if (!script.isBlank && script.expr != null) {
-			script.interp.scriptObject = this;
-			script.interp.execute(script.expr);
+		scripts = [];
+		songData = Paths.json('$songFolder/data/meta');
+		songEvents = Paths.exists('$songFolder/data/events.json') ? Paths.json('$songFolder/data/events').events : [];
+
+		for (scriptName in Paths.readDir('$songFolder/scripts')) {
+			scriptName = scriptName.split(".")[0];
+
+			var script = new HScript(songFolder + "/scripts/" + scriptName);
+			if (!script.isBlank && script.expr != null) {
+				script.interp.scriptObject = this;
+				script.interp.execute(script.expr);
+			}
+			script.callFunction("create");
+
+			scripts.push(script);
 		}
 
-		script.callFunction("create");
-
 		FlxG.sound.playMusic(Paths.song('$songFolder/music'));
-
-		FlxG.sound.music.volume = 0;
-		FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.75, {ease: FlxEase.quadOut});
+		FlxG.timeScale = FlxG.sound.music.pitch = 1;
 
 		FlxG.sound.music.onComplete = function() {
 			curSongIndex++;
@@ -87,7 +93,10 @@ class PlayState extends FlxState
 			if (curSongIndex >= Main.songList.length)
 				curSongIndex = 0;
 
-			loadSong(curSongIndex);
+			loadSong(shuffleMode ? FlxG.random.int(0, Main.songList.length - 1) : curSongIndex);
+
+			FlxG.sound.music.volume = 0;
+			FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.45, {ease: FlxEase.quadOut});
 		};
 
 		@:privateAccess
@@ -138,12 +147,13 @@ class PlayState extends FlxState
 			add(obj);
 		}
 
-		script.callFunction("postCreate");
+		for (script in scripts) script.callFunction("postCreate");
 	}
 
 	override public function update(elapsed:Float)
 	{
-		if (FlxG.keys.justPressed.ESCAPE) FlxG.switchState(new SongPicker());
+		if (FlxG.keys.justPressed.ESCAPE) FlxG.switchState(new SongPickerState());
+
 		if (FlxG.sound.music != null) {
 			songPos = FlxG.sound.music.time / 1000;
 			curBeat = (songPos * songData.bpm) / 60;
@@ -162,26 +172,34 @@ class PlayState extends FlxState
 
 			if (FlxG.keys.justPressed.SPACE || (FlxG.mouse.overlaps(play) && FlxG.mouse.justPressed)) {
 				if (FlxG.sound.music.playing) {
+					FlxG.timeScale = 0;
 					FlxG.sound.music.pause();
 					play.animation.play("pause");
+					for (script in scripts) script.callFunction("pause");
 				} else {
+					FlxG.timeScale = FlxG.sound.music.pitch;
 					FlxG.sound.music.resume();
 					play.animation.play("play");
+					for (script in scripts) script.callFunction("play");
 				}
 			}
 
 			if (FlxG.keys.pressed.ALT ? FlxG.keys.pressed.LEFT : FlxG.keys.justPressed.LEFT) {
 				if (FlxG.keys.pressed.CONTROL)
 					FlxG.timeScale = FlxG.sound.music.pitch -= 0.005;
-				else
+				else {
 					FlxG.sound.music.time -= 500;
+					for (script in scripts) script.callFunction("rewind");
+				}
 			}
 
 			if (FlxG.keys.pressed.ALT ? FlxG.keys.pressed.RIGHT : FlxG.keys.justPressed.RIGHT) {
 				if (FlxG.keys.pressed.CONTROL)
 					FlxG.timeScale = FlxG.sound.music.pitch += 0.005;
-				else
+				else {
 					FlxG.sound.music.time += 500;
+					for (script in scripts) script.callFunction("foward");
+				}
 			}
 
 			songTimeText.text = FlxStringUtil.formatTime(songPos);
@@ -194,15 +212,15 @@ class PlayState extends FlxState
 
 		FlxG.camera.zoom = FlxMath.lerp(FlxG.camera.zoom, 1, camBopLerpSpeed * elapsed * 60);
 
-		script.callFunction("update", [elapsed]);
+		for (script in scripts) script.callFunction("update", [elapsed]);
 	}
 
 	function beatHit()
 	{
-		if (lastBeat % camBopBeat == 0)
+		if (lastBeat % camBopBeat == 0 && OptionsState.options.get("Camera Bops On Beat"))
 			FlxG.camera.zoom += camBopIntensity;
 
-		script.callFunction("beatHit");
+		for (script in scripts) script.callFunction("beatHit");
 	}
 
 	function playEvent(e:Dynamic) {
@@ -213,10 +231,17 @@ class PlayState extends FlxState
 				camBopBeat = e.params[0];
 				camBopIntensity = e.params[1];
 				camBopLerpSpeed = e.params[2];
+			case "Lyrics":
+				var epicLyricTextFromOhio:FlxText = new FlxText(0, songPosBar.y - 30, FlxG.width, e.params[0], songText.size);
+				epicLyricTextFromOhio.alignment = CENTER;
+				epicLyricTextFromOhio.font = songText.font;
+				epicLyricTextFromOhio.camera = uiCam;
+				FlxTween.tween(epicLyricTextFromOhio, {y: epicLyricTextFromOhio.y - 15, alpha: 0}, 0.15, {ease: FlxEase.circIn, startDelay: e.params[1] - 0.15});
+				add(epicLyricTextFromOhio);
 			default:
 				//fuck me in the ass please :3
 		}
 
-		script.callFunction("playEvent", [e]);
+		for (script in scripts) script.callFunction("playEvent", [e]);
 	}
 }

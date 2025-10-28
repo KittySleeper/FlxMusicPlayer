@@ -18,4 +18,5 @@ class Paths {
     public static inline function rawfile(path:String) return 'assets/$path';
 
     public static inline function exists(path:String) return FileSystem.exists("./assets/" + path);
+    public static inline function readDir(path:String) return exists(path) ? FileSystem.readDirectory("./assets/" + path) : [];
 }

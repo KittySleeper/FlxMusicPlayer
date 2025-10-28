@@ -19,7 +19,7 @@ class Visualizer extends FlxTypedSpriteGroup<FlxSprite>
 		add(grpBars);
 
         peakLines = new FlxTypedSpriteGroup<FlxSprite>();
-        add(peakLines);
+        if (OptionsState.options.get("Show Peaks")) add(peakLines);
 
 		for (i in 0...barCount)
 		{
