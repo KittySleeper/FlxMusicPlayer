@@ -41,14 +41,14 @@
 	<haxelib name="cne-flixel-addons" />
 
 	<!--In case you want to use the ui package-->
-	<haxelib name="flixel-ui" version="2.5.0"/>
+	<haxelib name="flixel-ui"/>
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->
 
 	<haxelib name="grig.audio" />
 	<haxelib name="funkin.vis" />
-	<haxelib name="hxvlc" version="2.2.4"/>
+	<haxelib name="hxvlc"/>
 	<haxelib name="hscript-improved" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->

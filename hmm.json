@@ -15,11 +15,6 @@
       "url": "https://github.com/CodenameCrew/cne-flixel-addons"
     },
     {
-        "name": "flixel-ui",
-        "type": "haxelib",
-        "version": "2.5.0"
-    },
-    {
       "name": "hscript-improved",
       "type": "git",
       "dir": null,
@@ -64,6 +59,11 @@
       "name": "openfl",
       "type": "haxelib",
       "version": "9.2.2"
+    },
+    {
+        "name": "flixel-ui",
+        "type": "haxelib",
+        "version": "2.5.0"
     }
   ]
 }
